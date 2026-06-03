@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme Variables ─────────────────────────────────────────────────────── */
+:root {
+  --font-bebas: 'Bebas Neue', Impact, sans-serif;
+  --font-playfair: 'Playfair Display', Georgia, serif;
+  --font-dm-sans: 'DM Sans', system-ui, sans-serif;
+
+  /* Light mode — Aged Parchment */
+  --v-bg:       #F5EFE0;
+  --v-surface:  #EDE6D4;
+  --v-card:     #E8DEC8;
+  --v-text:     #1A0F07;
+  --v-text2:    #5C3A1E;
+  --v-muted:    #9B7A5A;
+  --v-accent:   #B07B18;
+  --v-accent-h: #C99020;
+  --v-border:   #C8B090;
+  --v-divider:  #D4C4A0;
+  --v-red:      #6B1B1B;
+}
+
+.dark {
+  /* Dark mode — Deep Espresso */
+  --v-bg:       #0D0804;
+  --v-surface:  #1A100A;
+  --v-card:     #221508;
+  --v-text:     #F5EFE0;
+  --v-text2:    #C4A882;
+  --v-muted:    #8B7055;
+  --v-accent:   #D4A832;
+  --v-accent-h: #E8C050;
+  --v-border:   #3A2510;
+  --v-divider:  #2A1A0A;
+  --v-red:      #8B2020;
+}
+
+/* ── Base Reset ──────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--v-bg);
+  color: var(--v-text);
+  font-family: var(--font-dm-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Grain Texture Overlay ───────────────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.035;
+  z-index: 9999;
+}
+
+/* ── Typography Utilities ────────────────────────────────────────────────── */
+.text-accent-gradient {
+  background: linear-gradient(135deg, var(--v-accent) 0%, var(--v-accent-h) 50%, var(--v-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Legacy gold gradient kept for compatibility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #c9a84c 0%, #e0c070 50%, #c9a84c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Vintage Decorative Elements ─────────────────────────────────────────── */
+.vintage-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--v-accent);
+}
+.vintage-divider::before,
+.vintage-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--v-border), transparent);
+}
+
+.vintage-border {
+  border: 1px solid var(--v-border);
+  position: relative;
+}
+.vintage-border::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--v-divider);
+  pointer-events: none;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--v-bg); }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--v-accent) 40%, transparent);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--v-accent) 70%, transparent);
+}
+
+/* ── Three.js canvas ─────────────────────────────────────────────────────── */
+canvas { display: block; }
+
+/* ── Section label style ─────────────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-playfair);
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--v-accent);
+  letter-spacing: 0.05em;
+}
+
+/* ── Vintage button ──────────────────────────────────────────────────────── */
+.btn-vintage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: var(--v-accent);
+  color: var(--v-bg);
+  font-family: var(--font-bebas);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+.btn-vintage:hover {
+  background: var(--v-accent-h);
+  transform: translateY(-1px);
+}
+
+.btn-outline-vintage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: transparent;
+  color: var(--v-text);
+  font-family: var(--font-bebas);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  border: 1px solid var(--v-border);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.btn-outline-vintage:hover {
+  border-color: var(--v-accent);
+  color: var(--v-accent);
+}
