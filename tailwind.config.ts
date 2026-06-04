@@ -10,6 +10,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // shadcn-style tokens consumed by mapcn (map component)
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: {
+          DEFAULT: 'var(--card-bg)',
+          foreground: 'var(--card-fg)',
+        },
+        popover: {
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
+        },
+        primary: 'var(--primary)',
+        muted: {
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
+        },
+        accent: 'var(--accent)',
+        border: 'var(--border-color)',
+        ring: 'var(--ring)',
         // CSS variable-driven theme tokens
         v: {
           bg: 'var(--v-bg)',
@@ -49,8 +68,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['var(--font-bebas)', 'Impact', 'sans-serif'],
-        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        display: ['var(--font-bebas)', 'Arial Narrow', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'system-ui', 'sans-serif'],
         body: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {

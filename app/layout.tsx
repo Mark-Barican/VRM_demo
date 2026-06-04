@@ -1,17 +1,20 @@
 import type { Metadata } from 'next';
 import '../styles/globals.css';
+import { CartProvider } from '@/components/CartProvider';
+import CartDrawer from '@/components/CartDrawer';
+import AnnouncementBar from '@/components/AnnouncementBar';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'VRM Manila Helmets — Ride With Honor Since 1976',
+  title: 'Vintage Rider Manila (VRM 1976) — Home of Classics & Modern Retro',
   description:
-    'Classic Filipino helmets since 1976. Retro scooter helmets handcrafted for the Filipino rider. ECE & DOT certified.',
-  keywords: ['motorcycle helmet', 'Filipino helmet', 'VRM Manila', 'retro helmet', 'scooter helmet Philippines', 'vintage helmet'],
+    'Vintage Rider Manila is a proudly Filipino helmet & moto-gear brand. Shock-resistant ABS, TIS-rated (≈ECE), with a valid ICC sticker — from the vintage VRM 1976 line to the modern VRUM range.',
+  keywords: ['Vintage Rider Manila', 'VRM 1976', 'VRUM', 'Filipino helmet', 'motorcycle helmet Philippines', 'retro helmet', 'café racer helmet', 'scooter helmet', 'TIS rated helmet'],
   openGraph: {
-    title: 'VRM Manila Helmets — Since 1976',
-    description: 'Classic Filipino helmets for the retro scooter rider.',
-    siteName: 'VRM Manila',
+    title: 'Vintage Rider Manila — Home of Classics & Modern Retro',
+    description: 'Proudly Filipino helmets & moto-gear for the classic, café-racer, scooter and e-bike rider.',
+    siteName: 'Vintage Rider Manila',
     locale: 'en_PH',
     type: 'website',
   },
@@ -29,9 +32,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="bg-v-bg text-v-text font-body antialiased">
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+        <CartProvider>
+          <AnnouncementBar />
+          <Nav />
+          <main>{children}</main>
+          <Footer />
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import HeroSection from '@/components/HeroSection';
+import PartnerLogoMarquee from '@/components/PartnerLogoMarquee';
 import HelmetCard from '@/components/HelmetCard';
 import ViewerModal from '@/components/ViewerModal';
 import { HELMETS, FEATURES, TESTIMONIALS, BRAND_COPY, type Helmet } from '@/lib/placeholders';
@@ -65,24 +66,27 @@ export default function HomePage() {
     <>
       <HeroSection />
 
+      {/* ── Trusted partner logos (marquee) ────────────────────────────────── */}
+      <PartnerLogoMarquee />
+
       {/* ── Featured Helmets ───────────────────────────────────────────────── */}
-      <section className="py-24 bg-v-bg" ref={featuredSectionRef}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14" data-reveal>
+      <section className="section-py section-fade-down" ref={featuredSectionRef}>
+        <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-14" data-reveal>
             <p className="section-label mb-2">— Collection —</p>
-            <h2 className="font-display text-5xl sm:text-6xl tracking-wide text-v-text">
+            <h2 className="font-display fluid-h2 tracking-wide text-v-text">
               Featured Helmets
             </h2>
-            <div className="vintage-divider w-48 mx-auto mt-4 text-v-accent" />
+            <div className="vintage-divider w-40 sm:w-48 mx-auto mt-4 text-v-accent" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {featuredHelmets.map((helmet, i) => (
               <div key={helmet.id} data-reveal>
                 <HelmetCard helmet={helmet} onView3D={setActiveHelmet} priority={i === 0} />
               </div>
             ))}
           </div>
-          <div className="text-center mt-12" data-reveal>
+          <div className="text-center mt-10 sm:mt-12" data-reveal>
             <a
               href="/shop"
               className="btn-outline-vintage text-sm inline-flex items-center gap-2"
@@ -97,16 +101,16 @@ export default function HomePage() {
       </section>
 
       {/* ── Why VRM ────────────────────────────────────────────────────────── */}
-      <section className="py-24 bg-v-surface" ref={featureSectionRef}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14" data-reveal>
+      <section className="section-py section-fade-up" ref={featureSectionRef}>
+        <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-14" data-reveal>
             <p className="section-label mb-2">— Why VRM —</p>
-            <h2 className="font-display text-5xl sm:text-6xl tracking-wide text-v-text">
+            <h2 className="font-display fluid-h2 tracking-wide text-v-text">
               Built Different.
             </h2>
-            <div className="vintage-divider w-48 mx-auto mt-4 text-v-accent" />
+            <div className="vintage-divider w-40 sm:w-48 mx-auto mt-4 text-v-accent" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {FEATURES.map((feat) => (
               <div
                 key={feat.id}
@@ -120,7 +124,7 @@ export default function HomePage() {
                 <div className="w-12 h-12 flex items-center justify-center text-v-accent mb-6 border border-v-border group-hover:border-v-accent group-hover:bg-v-accent/5 transition-colors">
                   {FEATURE_ICONS[feat.icon]}
                 </div>
-                <h3 className="font-display text-2xl tracking-wide text-v-text mb-3">{feat.title}</h3>
+                <h3 className="font-display fluid-h4 tracking-wide text-v-text mb-3">{feat.title}</h3>
                 <p className="text-v-muted text-sm leading-relaxed">{feat.description}</p>
               </div>
             ))}
@@ -129,20 +133,20 @@ export default function HomePage() {
       </section>
 
       {/* ── 3D Viewer ──────────────────────────────────────────────────────── */}
-      <section className="py-24 bg-v-bg overflow-hidden" ref={viewerSectionRef}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="section-py section-fade-down overflow-hidden" ref={viewerSectionRef}>
+        <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             {/* Text */}
             <div data-reveal>
               <p className="section-label mb-3">{BRAND_COPY.viewer3dLabel}</p>
-              <h2 className="font-display text-5xl sm:text-6xl tracking-wide text-v-text mb-6">
+              <h2 className="font-display fluid-h2 tracking-wide text-v-text mb-6">
                 Explore Every Angle.
               </h2>
               <p className="font-body text-v-muted leading-relaxed mb-4">
                 Examine our helmets in full 3D before you buy. Rotate, zoom, and inspect every detail — the handcrafted stitching, the gold trim, the vintage finish — all from your screen.
               </p>
               <p className="font-body text-v-muted leading-relaxed mb-8">
-                Every helmet in our collection is built with the Filipino rider in mind: classic shapes, modern protection standards, and a style that never ages.
+                From the vintage VRM 1976 line to the modern VRUM range, every helmet is built for the Filipino rider — shock-resistant ABS shell, EPS absorber, and TIS-rated protection (equivalent to ECE).
               </p>
               <p className="font-serif italic text-xs text-v-muted/50 tracking-wide">
                 {BRAND_COPY.viewer3dSub}
@@ -151,7 +155,7 @@ export default function HomePage() {
 
             {/* 3D Canvas */}
             <div
-              className="relative h-[460px] border border-v-border bg-v-surface overflow-hidden"
+              className="relative h-[340px] sm:h-[440px] lg:h-[480px] border border-v-border bg-v-surface overflow-hidden"
               data-reveal
             >
               {/* Vintage corner accents */}
@@ -166,16 +170,16 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ───────────────────────────────────────────────────── */}
-      <section className="py-24 bg-v-surface" ref={testimonialsRef}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-14" data-reveal>
+      <section className="section-py section-fade-up" ref={testimonialsRef}>
+        <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-14" data-reveal>
             <p className="section-label mb-2">— Reviews —</p>
-            <h2 className="font-display text-5xl sm:text-6xl tracking-wide text-v-text">
+            <h2 className="font-display fluid-h2 tracking-wide text-v-text">
               Riders Speak.
             </h2>
-            <div className="vintage-divider w-48 mx-auto mt-4 text-v-accent" />
+            <div className="vintage-divider w-40 sm:w-48 mx-auto mt-4 text-v-accent" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
             {TESTIMONIALS.map((t) => (
               <div
                 key={t.id}
@@ -216,21 +220,14 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA Banner ─────────────────────────────────────────────────────── */}
-      <section className="py-20 bg-v-accent relative overflow-hidden">
-        {/* Subtle sun pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 50% 50%, #000 0%, transparent 60%)',
-          }}
-        />
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-          <p className="font-serif italic text-v-bg/70 text-sm tracking-widest mb-3">— Est. Manila 1976 —</p>
-          <h2 className="font-display text-5xl sm:text-6xl tracking-wide text-v-bg mb-4">
+      <section className="py-24 sm:py-28 bg-v-accent relative overflow-hidden">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6 text-center relative z-10">
+          <p className="font-serif italic text-v-bg/70 text-sm tracking-widest mb-3">— VRM 1976 · Est. 2018 —</p>
+          <h2 className="font-display fluid-h2 tracking-wide text-v-bg mb-4">
             Ready to Ride?
           </h2>
           <p className="font-body text-v-bg/70 mb-8 text-lg">
-            Find your perfect VRM helmet. Classic Filipino craftsmanship, certified for every road.
+            Find your perfect VRM helmet — TIS-rated, ICC-certified and proudly Filipino. Classics and modern retro for every ride.
           </p>
           <a
             href="/shop"

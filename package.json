@@ -12,10 +12,16 @@
     "@react-three/drei": "^9.109.2",
     "@react-three/fiber": "^8.17.6",
     "@types/three": "^0.169.0",
+    "@use-gesture/react": "^10.3.1",
     "animejs": "^3.2.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.17.0",
+    "maplibre-gl": "^5.24.0",
     "next": "^15.5.19",
+    "ogl": "^1.0.11",
     "react": "^18",
     "react-dom": "^18",
+    "tailwind-merge": "^3.6.0",
     "three": "^0.169.0"
   },
   "devDependencies": {

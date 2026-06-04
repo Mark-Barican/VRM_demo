@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { animateModalOpen, animateModalClose } from '@/lib/animations';
 import type { Helmet } from '@/lib/placeholders';
+import { useCart } from './CartProvider';
 
 const HelmetViewer = dynamic(() => import('./HelmetViewer'), {
   ssr: false,
@@ -24,6 +25,7 @@ interface ViewerModalProps {
 export default function ViewerModal({ helmet, onClose }: ViewerModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (helmet && overlayRef.current && panelRef.current) {
@@ -102,10 +104,26 @@ export default function ViewerModal({ helmet, onClose }: ViewerModalProps) {
             <p className="text-xs text-v-muted mb-1">
               Available in: {helmet.colorways.join(', ')}
             </p>
-            <p className="text-xs text-v-muted/60">ECE 22.06 · DOT FMVSS 218 Certified</p>
+            <p className="text-xs text-v-muted/60">TIS-Rated (≈ ECE) · Valid ICC Sticker · DTI Conformity</p>
           </div>
-          <button className="btn-vintage text-sm">
-            Add to Cart
+          <button
+            onClick={() => {
+              if (helmet.availability === 'Out of Stock') return;
+              addItem(helmet.id);
+              handleClose();
+            }}
+            disabled={helmet.availability === 'Out of Stock'}
+            className={
+              helmet.availability === 'Out of Stock'
+                ? 'btn-outline-vintage text-sm opacity-60 cursor-not-allowed'
+                : 'btn-vintage text-sm'
+            }
+          >
+            {helmet.availability === 'Out of Stock'
+              ? 'Sold Out'
+              : helmet.availability === 'Made to Order'
+                ? 'Pre-Order'
+                : 'Add to Cart'}
           </button>
         </div>
       </div>

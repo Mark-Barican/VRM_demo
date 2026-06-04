@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,8 +6,13 @@
 
 /* ── Theme Variables ─────────────────────────────────────────────────────── */
 :root {
-  --font-bebas: 'Bebas Neue', Impact, sans-serif;
-  --font-playfair: 'Playfair Display', Georgia, serif;
+  /* Display/headings: Oswald — a blocky, industrial condensed sans that suits
+     the vintage-moto theme and reads far better than the old Bebas Neue. The
+     --font-bebas / --font-playfair names are kept so existing utility classes
+     resolve unchanged; accents now use the clean sans rather than a cursive
+     serif (per the "blocky, not cursive" direction). */
+  --font-bebas: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-playfair: 'DM Sans', system-ui, sans-serif;
   --font-dm-sans: 'DM Sans', system-ui, sans-serif;
 
   /* Light mode — Aged Parchment */
@@ -22,6 +27,20 @@
   --v-border:   #C8B090;
   --v-divider:  #D4C4A0;
   --v-red:      #6B1B1B;
+
+  /* shadcn-style tokens (used by mapcn) — mapped to the vintage palette */
+  --background:         #F5EFE0;
+  --foreground:         #1A0F07;
+  --card-bg:            #E8DEC8;
+  --card-fg:            #1A0F07;
+  --popover:            #EDE6D4;
+  --popover-foreground: #1A0F07;
+  --primary:            #B07B18;
+  --muted:              #D4C4A0;
+  --muted-foreground:   #9B7A5A;
+  --accent:             #E8DEC8;
+  --border-color:       #C8B090;
+  --ring:               #B07B18;
 }
 
 .dark {
@@ -37,6 +56,20 @@
   --v-border:   #3A2510;
   --v-divider:  #2A1A0A;
   --v-red:      #8B2020;
+
+  /* shadcn-style tokens (used by mapcn) — dark variants */
+  --background:         #0D0804;
+  --foreground:         #F5EFE0;
+  --card-bg:            #221508;
+  --card-fg:            #F5EFE0;
+  --popover:            #1A100A;
+  --popover-foreground: #F5EFE0;
+  --primary:            #D4A832;
+  --muted:              #2A1A0A;
+  --muted-foreground:   #8B7055;
+  --accent:             #221508;
+  --border-color:       #3A2510;
+  --ring:               #D4A832;
 }
 
 /* ── Base Reset ──────────────────────────────────────────────────────────── */
@@ -48,6 +81,10 @@
 
 html {
   scroll-behavior: smooth;
+  /* Safety net: never allow the page to scroll sideways on any device. `clip`
+     (not `hidden`) is used so it doesn't create a scroll container and thus
+     keeps `position: sticky` working for the shop toolbar. */
+  overflow-x: clip;
 }
 
 body {
@@ -57,6 +94,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: clip;
 }
 
 /* ── Grain Texture Overlay ───────────────────────────────────────────────── */
@@ -84,6 +122,58 @@ body::after {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ── Fluid type scale ────────────────────────────────────────────────────── */
+/* Headings scale smoothly with the viewport (like the hero) instead of jumping
+   at breakpoints. The clamp() min/max equal the old breakpoint sizes, so the
+   small-screen and large-screen ends look exactly as before — only the space
+   in between now interpolates. Kept in the `components` layer so any Tailwind
+   `leading-*` / `text-*` utility on the same element still wins. */
+@layer components {
+  .fluid-display { font-size: clamp(3rem, 1.75rem + 5.3vw, 6rem); line-height: 0.95; }     /* 48 → 96 (was 5xl→8xl) */
+  .fluid-h1      { font-size: clamp(3rem, 2.4rem + 2.6vw, 4.5rem); line-height: 1; }        /* 48 → 72 (was 5xl→7xl) */
+  .fluid-h2      { font-size: clamp(2.25rem, 1.63rem + 2.65vw, 3.75rem); line-height: 1.05; }/* 36 → 60 (was 4xl→6xl) */
+  .fluid-h2-sm   { font-size: clamp(2.25rem, 1.94rem + 1.33vw, 3rem); line-height: 1.1; }    /* 36 → 48 (was 4xl→5xl) */
+  .fluid-h3      { font-size: clamp(1.875rem, 1.6rem + 1.1vw, 2.25rem); line-height: 1.15; } /* 30 → 36 (was 3xl→4xl) */
+  .fluid-h4      { font-size: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem); line-height: 1.2; }   /* 24 → 30 (was 2xl→3xl) */
+  .fluid-lead    { font-size: clamp(1rem, 0.95rem + 0.3vw, 1.125rem); }                      /* 16 → 18 (was base→lg) */
+
+  /* Fluid vertical rhythm — replaces the common `py-16 sm:py-24` step. */
+  .section-py {
+    padding-top: clamp(4rem, 2.4rem + 5vw, 6rem);
+    padding-bottom: clamp(4rem, 2.4rem + 5vw, 6rem);
+  }
+}
+
+/* ── Smooth Section Transitions ──────────────────────────────────────────── */
+/* Adjacent sections share boundary colors so seams blend instead of hard-cut.
+   Alternate .section-fade-down / .section-fade-up down the page; use
+   .section-fade-band for a surface "island" between two bg sections, and
+   .section-fade-accent to bloom the gold CTA in/out of its neighbors. */
+.section-fade-down {
+  background-image: linear-gradient(to bottom, var(--v-bg), var(--v-surface));
+}
+.section-fade-up {
+  background-image: linear-gradient(to bottom, var(--v-surface), var(--v-bg));
+}
+.section-fade-band {
+  background-image: linear-gradient(
+    to bottom,
+    var(--v-bg) 0%,
+    var(--v-surface) 22%,
+    var(--v-surface) 78%,
+    var(--v-bg) 100%
+  );
+}
+.section-fade-accent {
+  background-image: linear-gradient(
+    to bottom,
+    var(--v-bg) 0%,
+    var(--v-accent) 24%,
+    var(--v-accent) 76%,
+    var(--v-surface) 100%
+  );
 }
 
 /* ── Vintage Decorative Elements ─────────────────────────────────────────── */
@@ -127,26 +217,69 @@ body::after {
 /* ── Three.js canvas ─────────────────────────────────────────────────────── */
 canvas { display: block; }
 
+/* ── Dual price-range slider thumbs ──────────────────────────────────────── */
+/* The two overlaid range inputs have transparent tracks (pointer-events:none
+   on the element) so only the thumbs intercept clicks — that lets both the
+   min and max handle sit on one track. */
+.price-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--v-accent);
+  border: 2px solid var(--v-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.price-thumb::-webkit-slider-thumb:hover {
+  background: var(--v-accent-h);
+  transform: scale(1.1);
+}
+.price-thumb::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--v-accent);
+  border: 2px solid var(--v-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.price-thumb::-moz-range-track {
+  background: transparent;
+}
+.price-thumb:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--v-accent-h);
+  outline-offset: 2px;
+}
+
 /* ── Section label style ─────────────────────────────────────────────────── */
 .section-label {
-  font-family: var(--font-playfair);
-  font-style: italic;
-  font-size: 0.875rem;
+  font-family: var(--font-bebas);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.8rem;
   color: var(--v-accent);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.18em;
 }
 
 /* ── Vintage button ──────────────────────────────────────────────────────── */
 .btn-vintage {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 2rem;
+  padding: 0.8rem 2rem;
   background: var(--v-accent);
   color: var(--v-bg);
   font-family: var(--font-bebas);
-  font-size: 1.1rem;
-  letter-spacing: 0.15em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   border: none;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.15s ease;
@@ -160,13 +293,16 @@ canvas { display: block; }
 .btn-outline-vintage {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 2rem;
+  padding: 0.8rem 2rem;
   background: transparent;
   color: var(--v-text);
   font-family: var(--font-bebas);
-  font-size: 1.1rem;
-  letter-spacing: 0.15em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   border: 1px solid var(--v-border);
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
