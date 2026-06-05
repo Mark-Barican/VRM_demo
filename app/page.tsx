@@ -223,7 +223,7 @@ export default function HomePage() {
       <section className="py-24 sm:py-28 bg-v-accent relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-5 sm:px-6 text-center relative z-10">
           <p className="font-serif italic text-v-bg/70 text-sm tracking-widest mb-3">— VRM 1976 · Est. 2018 —</p>
-          <h2 className="font-display fluid-h2 tracking-wide text-v-bg mb-4">
+          <h2 className="font-hero uppercase text-[clamp(2.75rem,2rem+3.4vw,4.75rem)] leading-[0.95] text-v-bg mb-4">
             Ready to Ride?
           </h2>
           <p className="font-body text-v-bg/70 mb-8 text-lg">
@@ -231,10 +231,13 @@ export default function HomePage() {
           </p>
           <a
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-v-bg text-v-accent font-display text-lg tracking-widest hover:bg-v-surface transition-colors duration-200"
+            className="group inline-flex items-center gap-3 px-10 py-5 bg-v-bg text-v-accent font-hero uppercase text-xl sm:text-2xl tracking-[0.12em] shadow-lg hover:bg-v-surface hover:-translate-y-0.5 transition-all duration-200"
             style={{ clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)' }}
           >
             Shop the Collection
+            <svg className="w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </a>
         </div>
       </section>

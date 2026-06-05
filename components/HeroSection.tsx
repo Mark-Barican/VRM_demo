@@ -5,11 +5,17 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { animateHeroEntrance } from '@/lib/animations';
 import Grainient from '@/components/Grainient';
+import Aurora from '@/components/Aurora';
 
 // Grainient palette mapped to the site theme.
 // color1 = lightest highlight, color2 = gold accent, color3 = deepest base.
 const GRAINIENT_LIGHT = { color1: '#FBF6EA', color2: '#C99020', color3: '#9B6B1E' };
 const GRAINIENT_DARK = { color1: '#E8C050', color2: '#7A4A1A', color3: '#0D0804' };
+
+// Aurora ribbon colors (gold → amber → bronze/ember), tuned per theme so the
+// curtain glows on the dark espresso bg and stays rich on light parchment.
+const AURORA_LIGHT = ['#C9881A', '#E0A830', '#8B5A12'];
+const AURORA_DARK = ['#D4A832', '#F0C868', '#7A4A1A'];
 
 // Philippine sun with 8 primary rays
 function PhilippineSun({ className = '' }: { className?: string }) {
@@ -56,6 +62,7 @@ export default function HeroSection() {
     return () => mo.disconnect();
   }, []);
   const grainient = isDark ? GRAINIENT_DARK : GRAINIENT_LIGHT;
+  const auroraStops = isDark ? AURORA_DARK : AURORA_LIGHT;
 
   useEffect(() => {
     animateHeroEntrance(headlineRef.current, subtextRef.current, ctaRef.current);
@@ -87,19 +94,20 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-[100svh] flex flex-col items-center overflow-hidden bg-v-bg px-4 pt-24 sm:pt-28 pb-20">
-      {/* Animated grainient gradient — recolored to the vintage palette */}
+      {/* Animated grainient gradient — recolored to the vintage palette. Motion
+          bumped up (time/warp speed) so it visibly drifts and feels alive. */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Grainient
           color1={grainient.color1}
           color2={grainient.color2}
           color3={grainient.color3}
-          timeSpeed={0.12}
+          timeSpeed={0.2}
           warpStrength={1.0}
           warpFrequency={4.0}
-          warpSpeed={1.2}
-          warpAmplitude={60.0}
+          warpSpeed={1.8}
+          warpAmplitude={55.0}
           blendSoftness={0.12}
-          rotationAmount={300.0}
+          rotationAmount={340.0}
           noiseScale={1.6}
           grainAmount={0.07}
           grainScale={2.0}
@@ -107,6 +115,20 @@ export default function HeroSection() {
           saturation={0.95}
           zoom={1.0}
         />
+      </div>
+
+      {/* Aurora curtain — React Bits WebGL aurora pinned to the TOP of the hero
+          for flowing, ribbon-like movement up top. Masked so it dissolves down
+          into the grainient; the scrims below still keep the centred copy and
+          the navbar legible. */}
+      <div
+        className="absolute inset-x-0 top-0 z-0 h-[62%] sm:h-[68%] pointer-events-none"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, #000 42%, transparent 92%)',
+          maskImage: 'linear-gradient(to bottom, #000 42%, transparent 92%)',
+        }}
+      >
+        <Aurora colorStops={auroraStops} amplitude={1.0} blend={0.5} speed={0.6} />
       </div>
 
       {/* Rotating rings — kept behind the scrim below so the readability scrim
@@ -180,7 +202,7 @@ export default function HeroSection() {
         {/* Main headline */}
         <h1
           ref={headlineRef}
-          className="font-display text-[clamp(2.25rem,min(9vw,11vh),7.5rem)] leading-[0.92] tracking-wide text-accent-gradient"
+          className="font-hero text-[clamp(2.5rem,min(9.5vw,12vh),8rem)] leading-[0.9] uppercase text-accent-gradient"
           style={{ opacity: 0 }}
         >
           Classics &amp; Modern Retro

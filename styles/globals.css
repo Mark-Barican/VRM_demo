@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -14,6 +14,10 @@
   --font-bebas: 'Oswald', 'Arial Narrow', sans-serif;
   --font-playfair: 'DM Sans', system-ui, sans-serif;
   --font-dm-sans: 'DM Sans', system-ui, sans-serif;
+  /* Hero display face — Anton: a heavy, condensed poster grotesque that gives
+     the landing page far more display character than the workhorse Oswald,
+     while still pairing cleanly with it. */
+  --font-display-hero: 'Anton', 'Oswald', 'Arial Narrow', sans-serif;
 
   /* Light mode — Aged Parchment */
   --v-bg:       #F5EFE0;
@@ -44,31 +48,32 @@
 }
 
 .dark {
-  /* Dark mode — Deep Espresso */
-  --v-bg:       #0D0804;
-  --v-surface:  #1A100A;
-  --v-card:     #221508;
+  /* Dark mode — Warm Espresso (lifted off pure black with a brown cast so the
+     darks read as aged-leather brown rather than heavy black). */
+  --v-bg:       #1B130B;
+  --v-surface:  #261B11;
+  --v-card:     #312214;
   --v-text:     #F5EFE0;
-  --v-text2:    #C4A882;
-  --v-muted:    #8B7055;
+  --v-text2:    #C9AD86;
+  --v-muted:    #93785A;
   --v-accent:   #D4A832;
   --v-accent-h: #E8C050;
-  --v-border:   #3A2510;
-  --v-divider:  #2A1A0A;
-  --v-red:      #8B2020;
+  --v-border:   #4A3620;
+  --v-divider:  #362612;
+  --v-red:      #9A2A22;
 
   /* shadcn-style tokens (used by mapcn) — dark variants */
-  --background:         #0D0804;
+  --background:         #1B130B;
   --foreground:         #F5EFE0;
-  --card-bg:            #221508;
+  --card-bg:            #312214;
   --card-fg:            #F5EFE0;
-  --popover:            #1A100A;
+  --popover:            #261B11;
   --popover-foreground: #F5EFE0;
   --primary:            #D4A832;
-  --muted:              #2A1A0A;
-  --muted-foreground:   #8B7055;
-  --accent:             #221508;
-  --border-color:       #3A2510;
+  --muted:              #362612;
+  --muted-foreground:   #93785A;
+  --accent:             #312214;
+  --border-color:       #4A3620;
   --ring:               #D4A832;
 }
 
@@ -143,6 +148,15 @@ body::after {
   .section-py {
     padding-top: clamp(4rem, 2.4rem + 5vw, 6rem);
     padding-bottom: clamp(4rem, 2.4rem + 5vw, 6rem);
+  }
+
+  /* Display-style face for the landing hero + home CTA. Anton runs slightly
+     wider than Oswald, so the tracking is pulled in a touch to keep big
+     headlines tight. */
+  .font-hero {
+    font-family: var(--font-display-hero);
+    font-weight: 400;
+    letter-spacing: 0.005em;
   }
 }
 

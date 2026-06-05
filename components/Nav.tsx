@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NAV_CATEGORIES } from '@/lib/placeholders';
 import { useCart } from './CartProvider';
 import ThemeToggle from './ThemeToggle';
@@ -22,6 +22,14 @@ const MOBILE_LINKS = [
   { href: '/contact', label: 'Contact' },
 ];
 
+// Items shown in the profile/account dropdown. (Demo links all resolve to the
+// account page.)
+const PROFILE_LINKS = [
+  { href: '/account', label: 'My Account' },
+  { href: '/account', label: 'Orders' },
+  { href: '/account', label: 'Wishlist' },
+];
+
 export default function Nav() {
   const pathname = usePathname();
   const router = useRouter();
@@ -32,6 +40,9 @@ export default function Nav() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  // Profile/account dropdown (anchored to the account icon).
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
   // Mobile drawer: when the "Shop" row is tapped, a category sub-panel slides
   // in to its right (the mobile equivalent of the desktop mega-menu).
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
@@ -46,8 +57,28 @@ export default function Nav() {
     e.preventDefault();
     const q = searchValue.trim();
     setSearchOpen(false);
+    setMenuOpen(false); // also dismiss the mobile drawer when searching from it
     router.push(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop');
   };
+
+  // Profile dropdown: close on outside click / Escape so it always reverts.
+  useEffect(() => {
+    if (!profileOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setProfileOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [profileOpen]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
@@ -61,6 +92,7 @@ export default function Nav() {
     setMenuOpen(false);
     setMegaOpen(false);
     setSearchOpen(false);
+    setProfileOpen(false);
     setMobileShopOpen(false);
   }, [pathname]);
 
@@ -68,7 +100,7 @@ export default function Nav() {
   // always on inner pages where there is no hero logo.
   const showLogo = scrolled || !isHome;
   // Solid backdrop whenever scrolled or an overlay panel is open.
-  const solid = scrolled || megaOpen || searchOpen;
+  const solid = scrolled || megaOpen || searchOpen || profileOpen;
 
   return (
     <header
@@ -149,28 +181,80 @@ export default function Nav() {
 
         {/* ── Right: search / account / cart / theme ─────────────────────── */}
         <div className="flex items-center justify-end gap-1 sm:gap-2">
+          {/* Search — desktop only. On mobile it moves into the side drawer and
+              the profile icon takes this slot instead. */}
           <button
             onClick={() => setSearchOpen((v) => !v)}
             aria-label="Search"
             aria-expanded={searchOpen}
-            className="w-9 h-9 flex items-center justify-center text-v-text2 hover:text-v-accent transition-colors"
+            className="hidden md:flex w-9 h-9 items-center justify-center text-v-text2 hover:text-v-accent transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </button>
 
-          <Link
-            href="/account"
-            aria-label="Account"
-            className={`hidden sm:flex w-9 h-9 items-center justify-center transition-colors hover:text-v-accent ${
-              pathname === '/account' ? 'text-v-accent' : 'text-v-text2'
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-            </svg>
-          </Link>
+          {/* Profile dropdown — shown at every size (on mobile it occupies the
+              search icon's old slot). */}
+          <div ref={profileRef} className="relative">
+            <button
+              onClick={() => {
+                setProfileOpen((v) => !v);
+                setMegaOpen(false);
+              }}
+              aria-label="Account menu"
+              aria-haspopup="menu"
+              aria-expanded={profileOpen}
+              className={`w-9 h-9 flex items-center justify-center transition-colors hover:text-v-accent ${
+                profileOpen || pathname === '/account' ? 'text-v-accent' : 'text-v-text2'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </button>
+
+            {/* Menu — closes on item click, outside click, Escape or route change. */}
+            <div
+              role="menu"
+              aria-label="Account"
+              className={`absolute right-0 top-full mt-2 w-56 origin-top-right z-[60] transition-all duration-200 ${
+                profileOpen
+                  ? 'opacity-100 visible translate-y-0'
+                  : 'opacity-0 invisible -translate-y-1 pointer-events-none'
+              }`}
+            >
+              <div className="bg-v-card border border-v-border shadow-xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-v-divider">
+                  <p className="text-[0.65rem] uppercase tracking-widest text-v-muted">Signed in as</p>
+                  <p className="font-body font-semibold text-v-text text-sm truncate">Miguel Reyes</p>
+                </div>
+                <div className="py-1">
+                  {PROFILE_LINKS.map(({ href, label }) => (
+                    <Link
+                      key={label}
+                      href={href}
+                      role="menuitem"
+                      onClick={() => setProfileOpen(false)}
+                      className="block px-4 py-2.5 text-sm font-body text-v-text2 hover:bg-v-surface hover:text-v-accent transition-colors"
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+                <div className="border-t border-v-divider">
+                  <Link
+                    href="/"
+                    role="menuitem"
+                    onClick={() => setProfileOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-body text-v-muted hover:bg-v-surface hover:text-v-red transition-colors"
+                  >
+                    Sign out
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <button
             onClick={openCart}
@@ -284,6 +368,25 @@ export default function Nav() {
       >
         <div className="min-h-0 overflow-hidden">
           <div className="bg-v-bg border-t border-v-border">
+            {/* Search — relocated here from the top bar on mobile. */}
+            <div className="px-5 sm:px-6 pt-4 pb-1">
+              <form
+                onSubmit={submitSearch}
+                className="flex items-center gap-2.5 border border-v-border bg-v-card px-3.5 py-3 focus-within:border-v-accent transition-colors"
+              >
+                <svg className="w-5 h-5 text-v-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                <input
+                  type="search"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  placeholder="Search helmets — Milano, Tracker…"
+                  className="flex-1 min-w-0 bg-transparent border-0 outline-none text-v-text placeholder:text-v-muted font-body text-base"
+                />
+              </form>
+            </div>
+
             <div className="flex">
               {/* Left: primary links. Shrinks to make room for the sub-panel. */}
               <ul
