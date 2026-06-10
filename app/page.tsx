@@ -125,7 +125,7 @@ export default function HomePage() {
               <SliderContent>
                 {FEATURES.map((feat, i) => (
                   <SliderWrapper key={feat.id} value={feat.id}>
-                    <div className="relative w-full h-[420px] sm:h-[480px] overflow-hidden rounded-lg border border-v-border">
+                    <div className="relative w-full h-[clamp(400px,56vh,520px)] overflow-hidden rounded-lg border border-v-border">
                       <Image
                         src={WHY_VRM_IMAGES[i]}
                         alt={feat.title}
@@ -133,19 +133,21 @@ export default function HomePage() {
                         sizes="(max-width: 1024px) 100vw, 56rem"
                         className="object-cover"
                       />
-                      {/* Scrim so the buttons stay legible over the photo */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-v-bg/95 via-v-bg/20 to-transparent pointer-events-none" />
+                      {/* Scrim so the overlaid buttons stay legible over the photo.
+                          Only on sm+ where the buttons sit on the image — on mobile
+                          the buttons drop below, so the photo shows in full. */}
+                      <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-v-bg/95 via-v-bg/20 to-transparent pointer-events-none" />
                     </div>
                   </SliderWrapper>
                 ))}
               </SliderContent>
 
-              <SliderBtnGroup className="absolute inset-x-0 bottom-0 h-fit isolate text-v-text bg-v-card overflow-hidden grid grid-cols-1 sm:grid-cols-3 rounded-b-lg border-t border-v-border">
+              <SliderBtnGroup className="relative sm:absolute sm:inset-x-0 sm:bottom-0 mt-3 sm:mt-0 h-fit isolate text-v-text bg-v-card overflow-hidden grid grid-cols-1 sm:grid-cols-3 rounded-lg sm:rounded-t-none border border-v-border sm:border-x-0 sm:border-b-0">
                 {FEATURES.map((feat, i) => (
                   <SliderBtn
                     key={feat.id}
                     value={feat.id}
-                    className="text-left cursor-pointer p-4 sm:p-5 sm:border-r last:border-r-0 border-v-border transition-opacity"
+                    className="text-left cursor-pointer p-4 sm:p-5 border-b last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 border-v-border transition-opacity"
                     progressBarClass="bottom-0 h-1.5 bg-v-accent"
                   >
                     <h3 className="relative inline-block w-fit px-3 py-0.5 mb-2 rounded-full bg-v-accent text-v-bg font-display uppercase tracking-wide text-xs">
@@ -219,7 +221,7 @@ export default function HomePage() {
       <section className="py-24 sm:py-28 bg-v-accent relative overflow-hidden">
         <div className="max-w-3xl mx-auto px-5 sm:px-6 text-center relative z-10">
           <p className="font-serif italic text-v-bg/70 text-sm tracking-widest mb-3">— VRM 1976 · Est. 2018 —</p>
-          <h2 className="font-hero uppercase text-[clamp(2.75rem,2rem+3.4vw,4.75rem)] leading-[0.95] text-v-bg mb-4">
+          <h2 className="font-hero uppercase text-[clamp(2.75rem,2rem_+_3.4vw,4.75rem)] leading-[0.95] text-v-bg mb-4">
             Ready to Ride?
           </h2>
           <p className="font-body text-v-bg/70 mb-8 text-lg">

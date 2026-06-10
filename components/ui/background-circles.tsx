@@ -123,7 +123,9 @@ export function BackgroundCircles({
             )}
         >
             <AnimatedGrid />
-            <motion.div className="absolute h-[480px] w-[480px]">
+            {/* Rings scale with the smaller viewport axis so they never clip on
+                narrow phones or short/landscape screens; capped at 480px. */}
+            <motion.div className="absolute aspect-square w-[min(480px,80vmin)]">
                 {[0, 1, 2].map((i) => (
                     <motion.div
                         key={i}
@@ -165,7 +167,7 @@ export function BackgroundCircles({
             >
                 <h1
                     className={clsx(
-                        "font-display uppercase text-5xl font-bold tracking-tight md:text-7xl",
+                        "font-display uppercase font-bold tracking-tight text-[clamp(2.5rem,1rem_+_6vw,4.5rem)]",
                         "bg-gradient-to-b from-[#1A0F07] to-[#5C3A1E] dark:from-[#F5EFE0] dark:to-[#D4A832] bg-clip-text text-transparent",
                         "drop-shadow-[0_0_32px_rgba(201,136,26,0.4)]"
                     )}

@@ -23,8 +23,11 @@ export default function HeroSection() {
         title="Classics & Modern Retro"
         description="Vintage Rider Manila"
       >
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-          <Link href="/shop" className="btn-vintage justify-center">
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center">
+          <Link
+            href="/shop"
+            className="btn-vintage justify-center text-[clamp(0.72rem,0.66rem_+_0.3vw,0.9rem)] px-[clamp(1rem,0.8rem_+_1.1vw,1.75rem)] py-[clamp(0.5rem,0.44rem_+_0.3vw,0.72rem)]"
+          >
             Explore Collection
             <svg
               className="w-4 h-4"
@@ -36,7 +39,10 @@ export default function HeroSection() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
-          <Link href="/about" className="btn-outline-vintage justify-center">
+          <Link
+            href="/about"
+            className="btn-outline-vintage justify-center text-[clamp(0.72rem,0.66rem_+_0.3vw,0.9rem)] px-[clamp(1rem,0.8rem_+_1.1vw,1.75rem)] py-[clamp(0.5rem,0.44rem_+_0.3vw,0.72rem)]"
+          >
             Our Story
           </Link>
         </div>
