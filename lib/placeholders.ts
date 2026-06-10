@@ -390,7 +390,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: 'team-founder',
     name: 'Atty. Ped Faytaren Jr.',
     role: 'Founder & Owner',
-    image: 'https://picsum.photos/seed/vrm-founder/400/400',
+    image: '/ped_profile_pic.jpg',
     bio: 'A lawyer, entrepreneur and lifelong rider, Atty. Ped Faytaren Jr. founded Vintage Rider Manila in 2018 to give Filipino riders gear that is safe, stylish and unmistakably their own — the home of Classics and Modern Retro.',
   },
 ];

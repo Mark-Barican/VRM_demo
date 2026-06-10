@@ -5,6 +5,7 @@ import CartDrawer from '@/components/CartDrawer';
 import AnnouncementBar from '@/components/AnnouncementBar';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import Preloader from '@/components/ui/preloader';
 
 export const metadata: Metadata = {
   title: 'Vintage Rider Manila (VRM 1976) — Home of Classics & Modern Retro',
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="bg-v-bg text-v-text font-body antialiased">
+        <Preloader />
         <CartProvider>
           <AnnouncementBar />
           <Nav />
