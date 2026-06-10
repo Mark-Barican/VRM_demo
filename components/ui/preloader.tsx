@@ -10,8 +10,17 @@ export default function Preloader() {
 
   useLayoutEffect(() => {
     let animationFrame = 0;
+    let revealTimer = 0;
 
-    const markLoaded = () => setLoaded(true);
+    // Keep the intro on screen for at least 2s, even if the page is ready
+    // sooner, so it never just flashes by on a fast load.
+    const MIN_DURATION = 2000;
+    const start = performance.now();
+
+    const markLoaded = () => {
+      const remaining = MIN_DURATION - (performance.now() - start);
+      revealTimer = window.setTimeout(() => setLoaded(true), Math.max(0, remaining));
+    };
 
     const checkReady = () => {
       if (document.readyState === 'complete') {
@@ -23,12 +32,13 @@ export default function Preloader() {
 
     checkReady();
 
-    // Safety net: never let the intro block interaction for more than ~1.8s,
+    // Safety net: never let the intro block interaction for more than ~4s,
     // even if a slow/blocked asset keeps readyState from reaching "complete".
-    const fallback = window.setTimeout(markLoaded, 1800);
+    const fallback = window.setTimeout(() => setLoaded(true), 4000);
 
     return () => {
       cancelAnimationFrame(animationFrame);
+      clearTimeout(revealTimer);
       clearTimeout(fallback);
     };
   }, []);
