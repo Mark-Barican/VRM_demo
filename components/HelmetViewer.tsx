@@ -35,6 +35,9 @@ export default function HelmetViewer({
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.localClippingEnabled = true;
     mount.appendChild(renderer.domElement);
+    // Let our handlers own every touch gesture (rotate / pinch) so the browser
+    // doesn't scroll the page or pinch-zoom the viewport while you fiddle.
+    renderer.domElement.style.touchAction = 'none';
 
     // ── Lighting ─────────────────────────────────────────────────────────────
     // Warm key light (from upper front)
@@ -322,6 +325,11 @@ export default function HelmetViewer({
     let spinning = autoRotate;
     let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
+    // Move the camera in/out within bounds — shared by wheel and pinch zoom.
+    const zoom = (delta: number) => {
+      camera.position.z = Math.max(2.5, Math.min(7, camera.position.z + delta));
+    };
+
     const startDrag = (x: number, y: number) => {
       isDragging = true;
       prevX = x; prevY = y;
@@ -343,20 +351,62 @@ export default function HelmetViewer({
     const onMouseDown = (e: MouseEvent) => startDrag(e.clientX, e.clientY);
     const onMouseMove = (e: MouseEvent) => moveDrag(e.clientX, e.clientY);
     const onMouseUp = () => endDrag();
-    const onTouchStart = (e: TouchEvent) => startDrag(e.touches[0].clientX, e.touches[0].clientY);
-    const onTouchMove = (e: TouchEvent) => moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-    const onTouchEnd = () => endDrag();
+
+    // ── Touch: one finger rotates, two fingers pinch to zoom ──────────────────
+    let isPinching = false;
+    let pinchPrevDist = 0;
+    const pinchDistance = (t: TouchList) =>
+      Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length >= 2) {
+        isPinching = true;
+        isDragging = false;
+        spinning = false;
+        if (idleTimer) clearTimeout(idleTimer);
+        pinchPrevDist = pinchDistance(e.touches);
+      } else if (e.touches.length === 1) {
+        isPinching = false;
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (isPinching && e.touches.length >= 2) {
+        e.preventDefault();
+        const dist = pinchDistance(e.touches);
+        // Fingers apart (dist grows) → move camera closer → zoom in.
+        zoom((pinchPrevDist - dist) * 0.01);
+        pinchPrevDist = dist;
+      } else if (isDragging && e.touches.length === 1) {
+        // Claim the gesture so the page can't scroll while turning the helmet.
+        e.preventDefault();
+        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length === 0) {
+        isPinching = false;
+        endDrag();
+      } else if (e.touches.length === 1) {
+        // Lifted one finger of a pinch — resume rotating with the other.
+        isPinching = false;
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      camera.position.z = Math.max(2.5, Math.min(7, camera.position.z + e.deltaY * 0.008));
+      zoom(e.deltaY * 0.008);
     };
 
     mount.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
+    // touchmove must be non-passive so preventDefault() can block page scroll;
+    // bound to `mount` so it's scoped to the canvas, not the whole window.
     mount.addEventListener('touchstart', onTouchStart, { passive: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
-    window.addEventListener('touchend', onTouchEnd);
+    mount.addEventListener('touchmove', onTouchMove, { passive: false });
+    mount.addEventListener('touchend', onTouchEnd);
     mount.addEventListener('wheel', onWheel, { passive: false });
 
     const onResize = () => {
@@ -390,8 +440,8 @@ export default function HelmetViewer({
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
       mount.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
+      mount.removeEventListener('touchmove', onTouchMove);
+      mount.removeEventListener('touchend', onTouchEnd);
       mount.removeEventListener('wheel', onWheel);
       window.removeEventListener('resize', onResize);
       renderer.dispose();
@@ -399,5 +449,5 @@ export default function HelmetViewer({
     };
   }, [autoRotate, color]);
 
-  return <div ref={mountRef} className={`w-full h-full cursor-grab active:cursor-grabbing ${className}`} />;
+  return <div ref={mountRef} className={`w-full h-full touch-none cursor-grab active:cursor-grabbing ${className}`} />;
 }
